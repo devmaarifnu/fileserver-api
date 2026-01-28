@@ -1,0 +1,704 @@
+{
+	"info": {
+		"_postman_id": "cdn-fileserver-api-collection",
+		"name": "CDN File Server API",
+		"description": "Collection for testing CDN File Server API endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "admin_token",
+			"value": "your-secret-token-admin-here-change-this-in-production",
+			"type": "string"
+		},
+		{
+			"key": "upload_token",
+			"value": "your-secret-token-upload-here-change-this-in-production",
+			"type": "string"
+		},
+		{
+			"key": "readonly_token",
+			"value": "your-secret-token-readonly-here-change-this-in-production",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Get Health Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Check API health status and get server information"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File Upload",
+			"item": [
+				{
+					"name": "Upload Public File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "tag",
+									"value": "images",
+									"type": "text"
+								},
+								{
+									"key": "public",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/upload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"upload"
+							]
+						},
+						"description": "Upload a public file with admin token"
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Private File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "tag",
+									"value": "documents",
+									"type": "text"
+								},
+								{
+									"key": "public",
+									"value": "false",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/upload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"upload"
+							]
+						},
+						"description": "Upload a private file with admin token"
+					},
+					"response": []
+				},
+				{
+					"name": "Upload with Upload Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{upload_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "tag",
+									"value": "uploads",
+									"type": "text"
+								},
+								{
+									"key": "public",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/upload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"upload"
+							]
+						},
+						"description": "Upload file with upload-only token"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File Download",
+			"item": [
+				{
+					"name": "Download Public File",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/:tag/:filename",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								":tag",
+								":filename"
+							],
+							"variable": [
+								{
+									"key": "tag",
+									"value": "images"
+								},
+								{
+									"key": "filename",
+									"value": "photo_abc123.jpg"
+								}
+							]
+						},
+						"description": "Download/view a public file without authentication"
+					},
+					"response": []
+				},
+				{
+					"name": "Download Private File (Header Auth)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/:tag/:filename",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								":tag",
+								":filename"
+							],
+							"variable": [
+								{
+									"key": "tag",
+									"value": "documents"
+								},
+								{
+									"key": "filename",
+									"value": "private_xyz789.pdf"
+								}
+							]
+						},
+						"description": "Download private file with token in header"
+					},
+					"response": []
+				},
+				{
+					"name": "Download Private File (Query Auth)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/:tag/:filename?token={{admin_token}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								":tag",
+								":filename"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}"
+								}
+							],
+							"variable": [
+								{
+									"key": "tag",
+									"value": "documents"
+								},
+								{
+									"key": "filename",
+									"value": "private_xyz789.pdf"
+								}
+							]
+						},
+						"description": "Download private file with token in query parameter"
+					},
+					"response": []
+				},
+				{
+					"name": "Force Download File",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/:tag/:filename?download=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								":tag",
+								":filename"
+							],
+							"query": [
+								{
+									"key": "download",
+									"value": "true"
+								}
+							],
+							"variable": [
+								{
+									"key": "tag",
+									"value": "images"
+								},
+								{
+									"key": "filename",
+									"value": "photo_abc123.jpg"
+								}
+							]
+						},
+						"description": "Force download file instead of viewing in browser"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File List",
+			"item": [
+				{
+					"name": "List All Files",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/files",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"files"
+							]
+						},
+						"description": "List all files with default pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "List Files by Tag",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/files?tag=images&page=1&limit=20",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"files"
+							],
+							"query": [
+								{
+									"key": "tag",
+									"value": "images"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "List files filtered by specific tag with pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "List Public Files Only",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/files?public=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"files"
+							],
+							"query": [
+								{
+									"key": "public",
+									"value": "true"
+								}
+							]
+						},
+						"description": "List only public files"
+					},
+					"response": []
+				},
+				{
+					"name": "List Private Files Only",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/files?public=false",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"files"
+							],
+							"query": [
+								{
+									"key": "public",
+									"value": "false"
+								}
+							]
+						},
+						"description": "List only private files"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Files",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/files?search=photo",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"files"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "photo"
+								}
+							]
+						},
+						"description": "Search files by filename"
+					},
+					"response": []
+				},
+				{
+					"name": "List with Sorting (Ascending)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/files?sort=asc",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"files"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "asc"
+								}
+							]
+						},
+						"description": "List files sorted by upload date (oldest first)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File Delete",
+			"item": [
+				{
+					"name": "Delete File (Admin Token)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/files/:tag/:filename",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"files",
+								":tag",
+								":filename"
+							],
+							"variable": [
+								{
+									"key": "tag",
+									"value": "images"
+								},
+								{
+									"key": "filename",
+									"value": "photo_abc123.jpg"
+								}
+							]
+						},
+						"description": "Delete a file with admin token"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete File (Upload Token - Should Fail)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{upload_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/files/:tag/:filename",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"files",
+								":tag",
+								":filename"
+							],
+							"variable": [
+								{
+									"key": "tag",
+									"value": "images"
+								},
+								{
+									"key": "filename",
+									"value": "photo_abc123.jpg"
+								}
+							]
+						},
+						"description": "Attempt to delete with upload token (should fail with 403)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Error Cases",
+			"item": [
+				{
+					"name": "Upload Without Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "tag",
+									"value": "images",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/upload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"upload"
+							]
+						},
+						"description": "Upload without authentication (should return 401)"
+					},
+					"response": []
+				},
+				{
+					"name": "Access Private File Without Token",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/documents/private_file.pdf",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"documents",
+								"private_file.pdf"
+							]
+						},
+						"description": "Access private file without token (should return 403)"
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Token",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer invalid-token-12345",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/files",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"files"
+							]
+						},
+						"description": "Request with invalid token (should return 401)"
+					},
+					"response": []
+				},
+				{
+					"name": "File Not Found",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/images/nonexistent_file.jpg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"images",
+								"nonexistent_file.jpg"
+							]
+						},
+						"description": "Access non-existent file (should return 404)"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

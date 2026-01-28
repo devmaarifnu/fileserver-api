@@ -1,0 +1,86 @@
+# Application Configuration
+app:
+  name: "CDN File Server"
+  env: "development"  # development, staging, production
+  port: 8080
+  version: "1.0.0"
+  domain: "cdn.maarifnu.or.id"
+
+# Storage Configuration
+storage:
+  base_path: "./storage"
+  max_file_size: 52428800  # 50MB in bytes
+  allowed_extensions:
+    - jpg
+    - jpeg
+    - png
+    - gif
+    - webp
+    - pdf
+    - doc
+    - docx
+    - xls
+    - xlsx
+    - ppt
+    - pptx
+    - zip
+    - rar
+    - mp4
+    - avi
+    - mov
+
+# Authentication Tokens
+tokens:
+  - id: "token_001"
+    key: "your-secret-token-admin-here-change-this-in-production"
+    name: "Admin Token"
+    permissions:
+      - upload
+      - delete
+      - list
+
+  - id: "token_002"
+    key: "your-secret-token-upload-here-change-this-in-production"
+    name: "Upload Token"
+    permissions:
+      - upload
+      - list
+
+  - id: "token_003"
+    key: "your-secret-token-readonly-here-change-this-in-production"
+    name: "Readonly Token"
+    permissions:
+      - list
+
+# CORS Configuration
+cors:
+  enabled: true
+  allowed_origins:
+    - "http://localhost:3000"
+    - "https://maarifnu.or.id"
+    - "https://www.maarifnu.or.id"
+  allowed_methods:
+    - "GET"
+    - "POST"
+    - "DELETE"
+    - "OPTIONS"
+  allowed_headers:
+    - "Content-Type"
+    - "Authorization"
+  allow_credentials: true
+
+# Logging Configuration
+logging:
+  level: "info"  # debug, info, warn, error
+  format: "json" # json or text
+  output: "both" # console, file, both
+  file_path: "./logs/app.log"
+  max_size: 100      # MB
+  max_backups: 5
+  max_age: 30        # days
+  compress: true
+
+# Security Configuration
+security:
+  validate_file_content: true  # Validate file magic bytes
+  sanitize_filename: true      # Sanitize user input filename

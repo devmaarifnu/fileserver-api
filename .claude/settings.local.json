@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(go mod init:*)",
+      "Bash(go get:*)",
+      "Bash(mkdir:*)",
+      "Bash(go mod:*)",
+      "Bash(go build:*)",
+      "Bash(./bin/cdn-fileserver.exe)",
+      "Bash(curl:*)",
+      "Bash(python:*)",
+      "Bash(cat:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
